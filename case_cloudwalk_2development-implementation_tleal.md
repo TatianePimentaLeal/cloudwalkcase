@@ -88,9 +88,7 @@ Em seguida, os dados dessas colunas foram verificados com mais especificidade re
 
        * Imagem 4. Gráfico de países com maior incidência*
 
-
-
-Esses padrões mostram que os **IPs e URIs** indicam acessos repetidos de certas fontes, e a maior parte do tráfego vem da **Índia e dos EUA**, com uma predominância de **dispositivos desktop** - que podem indicar bots zumbis.
+Esses padrões mostram que os **IPs e URIs** indicam acessos repetidos de certas fontes, e a maior parte do tráfego vem da **Índia e dos EUA**, com uma predominância de **dispositivos desktop** - que podem indicar computadores zumbis.
 
 Solicitei o código da análise ao GPT para que eu pudesse revisá-lo e rodá-lo para efetuar a comprovação da ediciência da análise. Após o ajuste do path do arquivo CSV, rodei o bloco de código e obtive o retorno dos dados:
 
@@ -167,7 +165,7 @@ ca        4
 Name: count, dtype: int64}
 ```
 
-Atestadas as informações acima, foi possível comprovar a funcionalidade do código e a análise preliminar.
+Atestadas as informações acima, foi possível comprovar a funcionalidade do código e a análise anterior.
 
 ---
 
@@ -175,7 +173,7 @@ Atestadas as informações acima, foi possível comprovar a funcionalidade do c�
 
 ### 2.2 Levantamento de anomalias e atividades suspeitas
 
-Com os dados mais claros e uma pré-análise do panorama de usuários, foi iniciada a fase de levantameno de acessos suspeitos ou anômalos, com a verificação de padrões nos dados.
+Com os dados mais claros e uma pré-análise do panorama de usuários, foi iniciada a fase de levantamento de acessos suspeitos ou anômalos, com a verificação de padrões nos dados.
 
 Novamente com o Python e utilizado novamente a biblioteca Pandas, iniciei o escaneamento de IPs e Portas do arquivo, uma vez que são ótimos indicativos de atividades maliciosas:
 
@@ -316,7 +314,7 @@ Detalhes dos 20 IPs públicos mais frequentes:
 [2250 rows x 7 columns]
 ```
 
-Pela recomendação do Copilot, efetuei uma busca **WHOIS ** no site https://www.whois.com/ e pude corroborar que os IPs retornados na busca estaam espalhados pelo mundo e possuem tags de  "OrgAbuseEmail" o que, de acordo com a International Leal Technology Association e com indicadores de comprometimento (indicatos or compromise or IOC) , são um indício de ameaça, mais precisamente ao verificar os dados, até mesmo de brute force attack.
+Pela recomendação do Copilot, efetuei uma busca **WHOIS ** no site https://www.whois.com/ e pude corroborar que os IPs retornados na busca estavam espalhados pelo mundo e possuem tags de  "OrgAbuseEmail" o que, de acordo com a [International Legal Technology Association](https://www.iltanet.org/blogs/david-tremont/2018/04/27/gdpr-and-whois-compliance) e com indicadores de comprometimento (indicatos or compromise or IOC) , são um indício de ameaça, mais precisamente ao verificar os dados, até mesmo de brute force attack.
 
 Adicionalmente, de acordo com o framework Mitre Att&ck, em uma busca preliminar, confirmava as suspeitas de tentativas de obtenção de acesso:
 
@@ -345,9 +343,9 @@ Como verificado na análise prévia do dataset com Python, foi possível apurar 
 
 Assim, foi concebido o script abaixo, com o auxílio do GPT4, para apurar:
 
-- o volume de requisições
-- países de origem das requisições
-- uso de portas incomum
+- O volume de requisições;
+- Países de origem das requisições;
+- Uso de portas incomum.
 
 ```python
 import pandas as pd
@@ -392,15 +390,15 @@ for alert in alerts:
     print(alert)
 ```
 
-Através do script acima, foram configurados parâmetros para a configuração de limite (threshold) de:
+Com o script , foram configurados parâmetros para a configuração de limite (threshold) de:
 
-- Requisições de ummesmo IP;
+- Requisições de um mesmo IP;
 
 - Retorno de países suspeitos;
 
 - Parâmetros de portas que são incomuns para acesso web.
 
-Depois, revisando o código com o GPT4, alterei o script para monitorar os logs de rede, detectar padrões suspeito de acordo com diretivas internas aplicadas a ele e, assim, gerar alertas por email com os dados dos eventos.
+Depois, revisando o código com o GPT4, alterei o script para monitorar os logs de rede, detectar padrões suspeito de acordo com diretivas internas aplicadas a ele e, assim, gerar alertas por email com os dados dos eventos:
 
 ```python
 import pandas as pd
@@ -481,9 +479,9 @@ alerts = generate_alerts(data)
 send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password)
 ```
 
-Por fim, para bloqueio de acessos de IPs suspeitos, seria necessária a integraão com sistemas de proteção como Firewall, um Sistema de Prevenção de Intrusões (IPS, ou em inglês Intrusion Prevention System - IPS) ou ainda servidores proxy/reverse proxy.
+Por fim, para bloqueio de acessos de IPs suspeitos, seria necessária a integração com sistemas de proteção como Firewall, um Sistema de Prevenção de Intrusões (IPS, ou em inglês Intrusion Prevention System - IPS) ou ainda servidores proxy/reverse proxy.
 
-Para fins de aplicação ao case, escolhi a adição de uma funcionalidade de bloqueio de IPs diretamente com Python e o iptabes para sistemas Linux:
+Para fins de aplicação ao case, escolhi a adição de uma funcionalidade de bloqueio de IPs diretamente com Python e o **iptables ** para sistemas Linux:
 
 ```python
 import os
@@ -503,11 +501,11 @@ block_suspicious_ips(data)
 
 Este bloco de código, quando agregado ao script de alerta, permite a ação completa do IDR compreendendo:
 
-- a detecção de ocorrências suspeitas na rede;
+- A detecção de ocorrências suspeitas na rede;
 
-- o envio de alertas das suspeitas por email para análise;
+- O envio de alertas das suspeitas por email para análise;
 
-- o bloqueio de IPs suspeitos com atividades maliciosas via iptables do Linux.
+- O bloqueio de IPs suspeitos com atividades maliciosas via iptables do Linux.
 
 ```python
 import pandas as pd
@@ -598,7 +596,7 @@ send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password
 block_suspicious_ips(data)
 ```
 
-Retorno do script de IDR acima:
+Retorno do script de IDR :
 
 ```python
 \\pythonProject\\dataset-full-idr-integration.py 
@@ -620,11 +618,13 @@ Em conclusão à análise do case da CloudWalk, através do dataset fornecido e 
 
 O grande volume de dados propiciou que fosse possível a análise de padrões de uma mais profunda, que exigia:
 
-. o entendimento preliminar do que consistia o conjunto de dados (dados de tráfego de rede);
+- O entendimento preliminar do que consistia o conjunto de dados (dados de tráfego de rede);
 
-. suas informações internal (colunas e dados gerais);
+- Suas informações internal (colunas e dados gerais);
 
-. o que poderia haver de errado com os dados (análise).
+- O que poderia haver de errado com os dados (análise).
+
+ 
 
 Por isso, iniciei o estudo com o entendimento dos dados, refinando alguns padrões, repetições e comportamentos suspeitos de acordo com frameworks e guidelines como o **Mitre Att&ck **(que apresenta táticas, técnicas e procedimentos de ataque), **NIST 800-53** e **ISO 27001 **(que apresenta informações de controles de acesso) com a ajuda do GPT4 e do Python para agilizar a análise.
 
