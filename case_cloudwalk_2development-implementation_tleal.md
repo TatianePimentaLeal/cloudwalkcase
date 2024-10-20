@@ -25,7 +25,7 @@ Em seguida, montei o seguinte prompt no GPT3.5:
 > 3. Conte o número de vezes em que dados aparecerem mais de 3 vezes na tabela e printe a quantidade de vezes
 > 4. Extraia padrões de acordo com os itens das colunas do documento
 
-
+---
 
 E recebendo o seguinte retorno:
 
@@ -56,9 +56,6 @@ Os dados foram organizados e valores que aparecem mais de 3 vezes foram identifi
 O resultado da análise foi o seguinte:
 
 - Para análise dos padões específicos, foi dado enfoque nas seguintes colunas para a extração de padrões mais consistentes
-
-
-
 1. **ClientIP**: Para ver se algum endereço IP faz múltiplas requisições.
 2. **ClientRequestHost**: Para identificar se algum host recebe acessos frequentes.
 3. **ClientRequestURI**: Para identificar se algum URI específico é mais solicitado.
@@ -71,27 +68,29 @@ Em seguida, os dados dessas colunas foram verificados com mais especificidade re
 
 1. **ClientIP (Top 10 IPs mais frequentes)**:
    
-   
+   ![cloudwalkcase/cloudwalk-case-images/Img1_ClientIP.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img1_ClientIP.jpg)
    
    
 
 2. **ClientRequestURI (Top 10 URIs mais solicitados)**:
    
-   
+   ![cloudwalkcase/cloudwalk-case-images/Img1_ClientRequestURI.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img1_ClientRequestURI.jpg)
    
    
 
 3. **ClientDeviceType (Distribuição por tipo de dispositivo)**:
    
-   
+   ![cloudwalkcase/cloudwalk-case-images/Img3_ClientDeviceType.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img3_ClientDeviceType.jpg)
    
    
 
 4. **ClientCountry (Distribuição por país)**:
    
-   
-   
-   
+   ![cloudwalkcase/cloudwalk-case-images/Img4_ClientCountry.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img4_ClientCountry.jpg)
+
+
+
+
 
 Esses padrões mostram que os **IPs e URIs** indicam acessos repetidos de certas fontes, e a maior parte do tráfego vem da **Índia e dos EUA**, com uma predominância de **dispositivos desktop**.
 
@@ -117,7 +116,11 @@ print(patterns)
 
 
 
-Resultado:
+O código acima efetua a contagem dos top 10 ligados aos elementos mais importantes da tabela em se tratando da análise de tráfego, permitindo um overview dos elementos maior incidência ao longo do dataset, retornando padrões de acordo com o que foi previamente estipulado.
+
+
+
+O resultado trouxe o seguinte panorama de dados, previamente colocados em forma de gráfico pela avaliação preliminar das informações:
 
 ```python
 \\pythonProject\\dataset-analysis.py 
@@ -170,7 +173,7 @@ ca        4
 Name: count, dtype: int64}
 ```
 
-Dado o retorno, foi possível comprovar a funcionalidade do código e a análise dos dados preliminares.
+Atestadas as informações acima, foi possível comprovar a funcionalidade do código e a análise preliminar.
 
 
 
@@ -188,9 +191,9 @@ Novamente com o Python e utilizado novamente a biblioteca Pandas, iniciei o esca
 import pandas as pd
 
 def analyze_suspicious_activity(file_path, port_threshold=100, ip_threshold=100):
-    
+
     # Análise das atividades suspeitas (verificação de portas e IPs com alta frequência).
-    
+
     df = pd.read_csv(file_path)
 
     ip_counts = df['ClientIP'].value_counts()
@@ -211,12 +214,7 @@ print("\nPortas suspeitas:")
 print(suspicious_ports)
 ```
 
-
-
-No código o termo ":param port_threshold:" pem
-
- Limite para considerar uma porta suspeita (quantidade de acessos).:param ip_threshold: Limite para considerar um IP suspeito (quantidade de acessos).:return: DataFrames de IPs e portas suspeitos.
-
+Neste script temos a análise das suspeitas de ataque e tentativa de invação da rede. Foram utilizadas uma variável para determinar o limite para se considerar uma porta como suspeita (quantidade de acessos), uma variável para limitar a consideração de um IP suspeito (quantidade de acessos) e o retorno de *DataFrames* de IPs e portas suspeitos.
 
 
 Através da análise, não foram encontradas portas que, usualmente, trazem sinal de alerta, mas pelos padrões dos IPs, alguns execeram em muito o threshold estabelecido no código como forma de balizar os acessos:
@@ -259,10 +257,8 @@ Portas suspeitas:
 Series([], Name: count, dtype: int64)
 ```
 
-
-
 Dados os resultados dos IPs, solicitei ao GPT4 que me ajudasse a criar uma função para levantar os IPs privados (por serem mais seguros e rodarem dentro de LANs de empresas) e os públicos (que poderiam estar ligados à pessoas externas e provaveis invasores).
-A função resultante foi a seguinte:
+A função resultante trouxe a divisão entre IPs públicos e privados, verificando os 20 IPs públicos mais frequentes, visto que neles se concentram a maioria dos ataques :
 
 ```python
 import pandas as pd
@@ -307,7 +303,6 @@ print(top_20_details)
 ```
 
 
-
 E ela resultou em uma suspeita devido ao padrão de IPs mostrado anteriormente, a quantidade de acessos e os "ClientRequestPath"do usuário:
 
 ```python
@@ -332,6 +327,13 @@ Detalhes dos 20 IPs públicos mais frequentes:
 ```
 
 Pela recomendação do Copilot, efetuei uma busca **WHOIS ** no site https://www.whois.com/ e pude corroborar que os IPs retornados na busca estaam espalhados pelo mundo e possuem tags de  "OrgAbuseEmail" o que, de acordo com a International Leal Technology Association e com indicadores de comprometimento (indicatos or compromise or IOC) , são um indício de ameaça, mais precisamente ao verificar os dados, até mesmo de brute force attack.
+
+
+Adicionalmente, de acordo com o framework Mitre Att&ck, em uma busca preliminar, confirmava as suspeitas de tentativas de obtenção de acesso:
+
+
+
+
 
 ---
 
@@ -396,6 +398,14 @@ alerts = generate_alerts(data)
 for alert in alerts:
     print(alert)
 ```
+
+Através do script acima, foram configurados parâmetros para a configuração de limite (threshold) de:
+
+- Requisições de ummesmo IP;
+
+- Retorno de países suspeitos;
+
+- Parâmetros de portas que são incomuns para acesso web.
 
 
 
@@ -479,6 +489,8 @@ alerts = generate_alerts(data)
 # Enviar os alertas por e-mail
 send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password)
 ```
+
+
 
 Por fim, para bloqueio de acessos de IPs suspeitos, seria necessária a integraão com sistemas de proteção como Firewall, um Sistema de Prevenção de Intrusões (IPS, ou em inglês Intrusion Prevention System - IPS) ou ainda servidores proxy/reverse proxy.
 
