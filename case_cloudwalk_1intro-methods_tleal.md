@@ -17,3 +17,13 @@ Python 3.12
 PyCharm (IDE)
 
 ChatGPT4
+
+
+
+#### Frameworks e guidelines:
+
+Mitre Att&ck
+
+ISO 27001 
+
+NIST 800-53

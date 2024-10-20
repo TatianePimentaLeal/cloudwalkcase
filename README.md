@@ -1,26 +1,19 @@
 # CloudWalk Case
 
-
 Repositório destinado aos dados relacionados ao trabalho de estudo de caso para Cybersecurity Problem Solver da empresa fintech CloudWalk (https://www.cloudwalk.io/)
-
-
 
 Os materiais estão organizados da seguinte forma:
 
-#### **DOCUMENTAÇÃO**
+### **DOCUMENTAÇÃO**
 
-**Introdução do estudo de caso**
+**1. Introdução do estudo de caso**
 [cloudwalkcase/case_cloudwalk_1intro-methods_tleal.md at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/case_cloudwalk_1intro-methods_tleal.md)
 
-
-
-**Desenvolvimento, implementação e conclusão**
+**2. Desenvolvimento, implementação e conclusão**
 
 [cloudwalkcase/case_cloudwalk_2development-implementation_tleal.md at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/case_cloudwalk_2development-implementation_tleal.md)
 
-
-
-#### **CÓDIGO E AMOSTRA DE DATASET**
+### **CÓDIGO E AMOSTRA DE DATASET**
 
 [cloudwalkcase/cloudwalk-case-tatianeleal/pythonProject at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/tree/main/cloudwalk-case-tatianeleal/pythonProject)
 
@@ -28,14 +21,10 @@ Os materiais estão organizados da seguinte forma:
 
 ---
 
-Sobre a autora:
+##### Sobre a autora:
 
-###### **LinkedIn** -
+**LinkedIn** - https://www.linkedin.com/in/tatianecampospimentaleal/
 
- [Tatiane Campos Pimenta Leal - MJV Technology &amp; Innovation | LinkedIn](https://www.linkedin.com/in/tatianecampospimentaleal)  
+**Certificações e achievements** - [Credly](https://www.credly.com/users/tatiane-leal.eaf82430)
 
-###### Certificações e achievements - [Credly](https://www.credly.com/users/tatiane-leal.eaf82430)
-
-###### LinkTree -
-
-https://linktr.ee/tatyplummer
+**LinkTree** - https://linktr.ee/tatyplummer

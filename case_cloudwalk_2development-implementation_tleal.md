@@ -2,7 +2,7 @@
 
 ## **2 Desenvolvimento e Implementação**
 
-#### 2.1 Análise do arquivo
+### 2.1 Análise do arquivo
 
 Primeiramente, era ter um panorama mais claro da massa de dados do arquivo CSV, assim, utilizei um pequeno código em Python para iniciar a análise:
 
@@ -17,16 +17,12 @@ Assim pude iniciar a visualização dos dados e ter uma ideia das colunas e cont
 
 Em seguida, montei o seguinte prompt no GPT3.5:
 
-
-
 > Crie um algoritmo em Python que:
 > 
 > 1. Leia o arquivo CSV anexo
 > 2. Organize os dados de acordo com os nomes das colunas
 > 3. Conte o número de vezes em que dados aparecerem mais de 3 vezes na tabela e printe a quantidade de vezes
 > 4. Extraia padrões de acordo com os itens das colunas do documento
-
-
 
 E recebendo o seguinte retorno:
 
@@ -49,8 +45,6 @@ E recebendo o seguinte retorno:
 15. `ClientRequestUserAgent`
 
 ''
-
-
 
 Os dados foram organizados e valores que aparecem mais de 3 vezes foram identificados.  Desta forma, segui o caminho de extração de  padrões específicos com base em colunas de interesse. Por exemplo, padrões de acessos repetidos por IP, Host ou outra categoria específica. O resultado da análise foi o seguinte:
 
@@ -124,8 +118,6 @@ Aqui estão os padrões extraídos das colunas mais relevantes do dataset:
 Esses padrões mostram que o **host mais acessado** é "porter.biz", os **IPs e URIs** indicam acessos repetidos de certas fontes, e a maior parte do tráfego vem da **Índia e dos EUA**, com uma predominância de **dispositivos desktop**.""
 
 ---
-
-
 
 Solicitei o código da análise ao GPT para que eu pudesse revisá-lo e rodá-lo para efetuar a comprovação da ediciência da análise. Após o ajuste do path do arquivo CSV, rodei o bloco de código e obtive o retorno dos dados:
 
@@ -225,7 +217,9 @@ Dado o retorno, foi possível comprovar a funcionalidade do código e a análise
 
 ---
 
-#### 2.2 Levantamento de anomalias e atividades suspeitas
+### 
+
+### 2.2 Levantamento de anomalias e atividades suspeitas
 
 Com os dados mais claros e uma pré-análise do panorama de usuários, foi iniciada a fase de levantameno de acessos suspeitos ou anômalos, com a verificação de padrões nos dados.
 
@@ -396,9 +390,11 @@ Detalhes dos 20 IPs públicos mais frequentes:
 
 Pela recomendação do Copilot, efetuei uma busca **WHOIS ** no site https://www.whois.com/ e pude corroborar que os IPs retornados na busca estaam espalhados pelo mundo e possuem tags de  "OrgAbuseEmail" o que, de acordo com a International Leal Technology Association e com indicadores de comprometimento (indicatos or compromise or IOC) , são um indício de ameaça, mais precisamente ao verificar os dados, até mesmo de brute force attack.
 
+---
 
 
-#### 2.3 Resposta e Detecção de Incidente (Incident Detection and Response - IDR) e Implementação de Políticas de Segurança
+
+### 2.3 Resposta e Detecção de Incidente (Incident Detection and Response - IDR) e Implementação de Políticas de Segurança
 
 Como não estamos utilizando ferramentas pagas como o Splunk, Fortinet ou Google Chronicle, as proposições de solução para resposta e detecção de incidente serão propostas como scripts.
 
@@ -465,8 +461,6 @@ alerts = generate_alerts(data)
 for alert in alerts:
     print(alert)
 ```
-
-
 
 Depois, revisando o código com o GPT4, alterei o script para monitorar os logs de rede, detectar padrões suspeito de acordo com diretivas internas aplicadas a ele e, assim, gerar alertas por email com os dados dos eventos.
 
@@ -560,8 +554,6 @@ alerts = generate_alerts(data)
 # Enviar os alertas por e-mail
 send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password)
 ```
-
-
 
 Por fim, para bloqueio de acessos de IPs suspeitos, seria necessária a integraão com sistemas de proteção como Firewall, um Sistema de Prevenção de Intrusões (IPS, ou em inglês Intrusion Prevention System - IPS) ou ainda servidores proxy/reverse proxy.
 
@@ -701,8 +693,6 @@ send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password
 block_suspicious_ips(data)
 ```
 
-
-
 Retorno do script de IDR acima:
 
 ```python
@@ -719,7 +709,9 @@ IP 129.53.13.62 bloqueado.
 
 
 
-#### 3 Conclusão e Fechamento
+---
+
+## 3 Conclusão e Fechamento
 
 Em conclusão à análise do case da CloudWalk, através do dataset fornecido e das solicitações feitas pelo time de avaliação, foi possível compreender o cerne do desafio verificar as capacidades de análise, pesquisa, persistência e perspicácia do candidato.
 
@@ -730,8 +722,6 @@ O grande volume de dados propiciou que fosse possível a análise de padrões de
 . suas informações internal (colunas e dados gerais);
 
 . o que poderia haver de errado com os dados (análise).
-
-
 
 Por isso, iniciei o estudo com o entendimento dos dados, refinando alguns padrões, repetições e comportamentos suspeitos de acordo com frameworks e guidelines como o **Mitre Att&ck **(que apresenta táticas, técnicas e procedimentos de ataque), **NIST 800-53** e **ISO 27001 **(que apresenta informações de controles de acesso) com a ajuda do GPT4 e do Python para agilizar a análise.
 
