@@ -17,12 +17,16 @@ Assim pude iniciar a visualização dos dados e ter uma ideia das colunas e cont
 
 Em seguida, montei o seguinte prompt no GPT3.5:
 
+
+
 > Crie um algoritmo em Python que:
 > 
 > 1. Leia o arquivo CSV anexo
 > 2. Organize os dados de acordo com os nomes das colunas
 > 3. Conte o número de vezes em que dados aparecerem mais de 3 vezes na tabela e printe a quantidade de vezes
 > 4. Extraia padrões de acordo com os itens das colunas do documento
+
+
 
 E recebendo o seguinte retorno:
 
@@ -44,17 +48,15 @@ E recebendo o seguinte retorno:
 14. `ClientRequestScheme`
 15. `ClientRequestUserAgent`
 
-Agora, organizarei os dados e contarei quantas vezes certos dados aparecem mais de 3 vezes, além de identificar padrões relevantes com base nesses dados.
+''
 
-Os dados foram organizados e valores que aparecem mais de 3 vezes foram identificados. Contudo, devido à grande quantidade de informações, o resultado foi truncado.
 
-Posso gerar uma análise mais refinada ou extrair padrões específicos com base em colunas que te interessam. Por exemplo, padrões de acessos repetidos por IP, Host ou outra categoria específica. Como gostaria de proceder?''
 
-Optando por seguir a segunda alternativa, inicialmente, o resultado da análise foi o seguinte:
+Os dados foram organizados e valores que aparecem mais de 3 vezes foram identificados.  Desta forma, segui o caminho de extração de  padrões específicos com base em colunas de interesse. Por exemplo, padrões de acessos repetidos por IP, Host ou outra categoria específica. O resultado da análise foi o seguinte:
 
 ---
 
-Para extrair padrões específicos, vou focar nas seguintes colunas para identificar ocorrências repetidas que podem indicar padrões:
+"Para extrair padrões específicos, vou focar nas seguintes colunas para identificar ocorrências repetidas que podem indicar padrões:
 
 1. **ClientIP**: Para ver se algum endereço IP faz múltiplas requisições.
 2. **ClientRequestHost**: Para identificar se algum host recebe acessos frequentes.
@@ -119,9 +121,11 @@ Aqui estão os padrões extraídos das colunas mais relevantes do dataset:
    - Japão (jp): 34 requisições
    - Reino Unido (gb): 26 requisições
 
-Esses padrões mostram que o **host mais acessado** é "porter.biz", os **IPs e URIs** indicam acessos repetidos de certas fontes, e a maior parte do tráfego vem da **Índia e dos EUA**, com uma predominância de **dispositivos desktop**.
+Esses padrões mostram que o **host mais acessado** é "porter.biz", os **IPs e URIs** indicam acessos repetidos de certas fontes, e a maior parte do tráfego vem da **Índia e dos EUA**, com uma predominância de **dispositivos desktop**.""
 
 ---
+
+
 
 Solicitei o código da análise ao GPT para que eu pudesse revisá-lo e rodá-lo para efetuar a comprovação da ediciência da análise. Após o ajuste do path do arquivo CSV, rodei o bloco de código e obtive o retorno dos dados:
 
@@ -392,6 +396,8 @@ Detalhes dos 20 IPs públicos mais frequentes:
 
 Pela recomendação do Copilot, efetuei uma busca **WHOIS ** no site https://www.whois.com/ e pude corroborar que os IPs retornados na busca estaam espalhados pelo mundo e possuem tags de  "OrgAbuseEmail" o que, de acordo com a International Leal Technology Association e com indicadores de comprometimento (indicatos or compromise or IOC) , são um indício de ameaça, mais precisamente ao verificar os dados, até mesmo de brute force attack.
 
+
+
 #### 2.3 Resposta e Detecção de Incidente (Incident Detection and Response - IDR) e Implementação de Políticas de Segurança
 
 Como não estamos utilizando ferramentas pagas como o Splunk, Fortinet ou Google Chronicle, as proposições de solução para resposta e detecção de incidente serão propostas como scripts.
@@ -459,6 +465,8 @@ alerts = generate_alerts(data)
 for alert in alerts:
     print(alert)
 ```
+
+
 
 Depois, revisando o código com o GPT4, alterei o script para monitorar os logs de rede, detectar padrões suspeito de acordo com diretivas internas aplicadas a ele e, assim, gerar alertas por email com os dados dos eventos.
 
@@ -552,6 +560,8 @@ alerts = generate_alerts(data)
 # Enviar os alertas por e-mail
 send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password)
 ```
+
+
 
 Por fim, para bloqueio de acessos de IPs suspeitos, seria necessária a integraão com sistemas de proteção como Firewall, um Sistema de Prevenção de Intrusões (IPS, ou em inglês Intrusion Prevention System - IPS) ou ainda servidores proxy/reverse proxy.
 
@@ -691,6 +701,8 @@ send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password
 block_suspicious_ips(data)
 ```
 
+
+
 Retorno do script de IDR acima:
 
 ```python
@@ -705,4 +717,28 @@ IP 222.30.33.183 bloqueado.
 IP 129.53.13.62 bloqueado.
 ```
 
-3 Conclusão e Fechamento
+
+
+#### 3 Conclusão e Fechamento
+
+Em conclusão à análise do case da CloudWalk, através do dataset fornecido e das solicitações feitas pelo time de avaliação, foi possível compreender o cerne do desafio verificar as capacidades de análise, pesquisa, persistência e perspicácia do candidato.
+
+O grande volume de dados propiciou que fosse possível a análise de padrões de uma mais profunda, que exigia:
+
+. o entendimento preliminar do que consistia o conjunto de dados (dados de tráfego de rede);
+
+. suas informações internal (colunas e dados gerais);
+
+. o que poderia haver de errado com os dados (análise).
+
+
+
+Por isso, iniciei o estudo com o entendimento dos dados, refinando alguns padrões, repetições e comportamentos suspeitos de acordo com frameworks e guidelines como o **Mitre Att&ck **(que apresenta táticas, técnicas e procedimentos de ataque), **NIST 800-53** e **ISO 27001 **(que apresenta informações de controles de acesso) com a ajuda do GPT4 e do Python para agilizar a análise.
+
+Com a impossibilidade de utilização de ferramentas pagas de SIEM, mas com o entendimento de que havia padrões suspeitos nos dados colhidos e analisados, concebi um script em Python que pudesse rodar em Linux e que propiciasse a aplicação de uma política balisada pelos guideline supracitados, e que premitisse o envio de alertas com os IPs suspeitos, para uma análise mais específica do time de analistas, assim como o bloqueio do IP até a verificação da idoneidade do IP.
+
+Pela natureza do comportamento observado no dataset e, considerando o comportamento em face ao Mitre Att&ck, o cenário configura um possível ataque de força bruta ao Infinite Pay ([https://www.infinitepay.io/](https://www.infinitepay.io/)), plataforma de pagamentos da CloudWalk, o que poderia ser desastroso em vários quesitos: danos materials no caso de manipulação de dados de clientes ou reputacionais em caso de sucesso na invação.
+
+A utilização de AI com o GPT4 para suporte na análise dos dados e criação de códigos rápidos para tested e incrementos, bem como o uso do Gemini e Copilot para a confirmação e informações como o WHOIS.
+
+O monitoramento do tráfego de rede é de extrema importância para que os clientes, a platform e a empresa CloudWalk fiquem seguros contra invasores.
