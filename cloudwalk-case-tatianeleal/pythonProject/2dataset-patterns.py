@@ -3,10 +3,9 @@ import pandas as pd
 file_path = 'test-dataset.csv'
 df = pd.read_csv(file_path)
 
-# Dicionário para armazenar os padrões extraídos
 patterns = {}
 
-# Contar as ocorrências de valores específicos nas colunas escolhidas
+# Contagem das ocorrências de valores específicos nas colunas escolhidas
 
 # Top 10 IPs mais frequentes
 patterns['ClientIP'] = df['ClientIP'].value_counts().head(10)
@@ -23,7 +22,7 @@ patterns['ClientDeviceType'] = df['ClientDeviceType'].value_counts()
 # Distribuição por país
 patterns['ClientCountry'] = df['ClientCountry'].value_counts()
 
-# Exibir os padrões extraídos
+# Padrões extraídos
 print(patterns)
 
 
