@@ -62,41 +62,31 @@ O resultado da análise foi o seguinte:
 4. **ClientDeviceType**: Para analisar o tipo de dispositivo mais usado.
 5. **ClientCountry**: Para verificar se há um país que realiza mais requisições.
 
-
-
 Em seguida, os dados dessas colunas foram verificados com mais especificidade resultando no seguinte panorama:
 
 1. **ClientIP (Top 10 IPs mais frequentes)**:
    
    ![cloudwalkcase/cloudwalk-case-images/Img1_ClientIP.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img1_ClientIP.jpg)
    
-   Imagem 1. Gráfico de IPs mais frequentes
-   
-   
+   *Imagem 1. Gráfico de IPs mais frequentes*
 
 2. **ClientRequestURI (Top 10 URIs mais solicitados)**:
    
-   ![cloudwalkcase/cloudwalk-case-images/Img1_ClientRequestURI.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img1_ClientRequestURI.jpg)
+   ![cloudwalkcase/cloudwalk-case-images/Img2_ClientRequestURI.jpg at 2fd4e1c8302852bffd4e2864470fbf99651aedb2 · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/2fd4e1c8302852bffd4e2864470fbf99651aedb2/cloudwalk-case-images/Img2_ClientRequestURI.jpg)
    
-   Imagem 2. Gráfico de URIs mais solicitados
-   
-   
+   *Imagem 2. Gráfico de URIs mais solicitados*
 
 3. **ClientDeviceType (Distribuição por tipo de dispositivo)**:
    
    ![cloudwalkcase/cloudwalk-case-images/Img3_ClientDeviceType.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img3_ClientDeviceType.jpg)
    
-   Imagem 3. Gráfico distribuição de dispositivos
-   
-   
+   *Imagem 3. Gráfico distribuição de dispositivos*
 
 4. **ClientCountry (Distribuição por país)**:
    
    ![cloudwalkcase/cloudwalk-case-images/Img4_ClientCountry.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img4_ClientCountry.jpg)
 
-        Imagem 4. Gráfico de países com maior incidência
-
-
+       * Imagem 4. Gráfico de países com maior incidência*
 
 
 
@@ -122,11 +112,7 @@ patterns['ClientCountry'] = df['ClientCountry'].value_counts()
 print(patterns)
 ```
 
-
-
 O código acima efetua a contagem dos top 10 ligados aos elementos mais importantes da tabela em se tratando da análise de tráfego, permitindo um overview dos elementos maior incidência ao longo do dataset, retornando padrões de acordo com o que foi previamente estipulado.
-
-
 
 O resultado trouxe o seguinte panorama de dados, previamente colocados em forma de gráfico pela avaliação preliminar das informações:
 
@@ -183,8 +169,6 @@ Name: count, dtype: int64}
 
 Atestadas as informações acima, foi possível comprovar a funcionalidade do código e a análise preliminar.
 
-
-
 ---
 
 ### 
@@ -223,7 +207,6 @@ print(suspicious_ports)
 ```
 
 Neste script temos a análise das suspeitas de ataque e tentativa de invação da rede. Foram utilizadas uma variável para determinar o limite para se considerar uma porta como suspeita (quantidade de acessos), uma variável para limitar a consideração de um IP suspeito (quantidade de acessos) e o retorno de *DataFrames* de IPs e portas suspeitos.
-
 
 Através da análise, não foram encontradas portas que, usualmente, trazem sinal de alerta, mas pelos padrões dos IPs, alguns execeram em muito o threshold estabelecido no código como forma de balizar os acessos:
 
@@ -310,7 +293,6 @@ print("\\nDetalhes dos 20 IPs públicos mais frequentes:")
 print(top_20_details) 
 ```
 
-
 E ela resultou em uma suspeita devido ao padrão de IPs mostrado anteriormente, a quantidade de acessos e os "ClientRequestPath"do usuário:
 
 ```python
@@ -336,7 +318,6 @@ Detalhes dos 20 IPs públicos mais frequentes:
 
 Pela recomendação do Copilot, efetuei uma busca **WHOIS ** no site https://www.whois.com/ e pude corroborar que os IPs retornados na busca estaam espalhados pelo mundo e possuem tags de  "OrgAbuseEmail" o que, de acordo com a International Leal Technology Association e com indicadores de comprometimento (indicatos or compromise or IOC) , são um indício de ameaça, mais precisamente ao verificar os dados, até mesmo de brute force attack.
 
-
 Adicionalmente, de acordo com o framework Mitre Att&ck, em uma busca preliminar, confirmava as suspeitas de tentativas de obtenção de acesso:
 
 ![cloudwalkcase/cloudwalk-case-images/Img5_mitre-attack-search.png at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img5_mitre-attack-search.png)
@@ -346,8 +327,6 @@ Adicionalmente, de acordo com o framework Mitre Att&ck, em uma busca preliminar,
 ![cloudwalkcase/cloudwalk-case-images/Img6_mitre-attack-search.png at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img6_mitre-attack-search.png)
 
 **Imagem 6.** Buscas no Mitre Att&ck Navigator - Data sources (Network)
-
-
 
 ---
 
@@ -420,8 +399,6 @@ Através do script acima, foram configurados parâmetros para a configuração d
 - Retorno de países suspeitos;
 
 - Parâmetros de portas que são incomuns para acesso web.
-
-
 
 Depois, revisando o código com o GPT4, alterei o script para monitorar os logs de rede, detectar padrões suspeito de acordo com diretivas internas aplicadas a ele e, assim, gerar alertas por email com os dados dos eventos.
 
@@ -503,8 +480,6 @@ alerts = generate_alerts(data)
 # Enviar os alertas por e-mail
 send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password)
 ```
-
-
 
 Por fim, para bloqueio de acessos de IPs suspeitos, seria necessária a integraão com sistemas de proteção como Firewall, um Sistema de Prevenção de Intrusões (IPS, ou em inglês Intrusion Prevention System - IPS) ou ainda servidores proxy/reverse proxy.
 
