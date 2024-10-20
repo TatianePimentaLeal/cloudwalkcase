@@ -18,8 +18,6 @@ PyCharm (IDE)
 
 ChatGPT4
 
-
-
 #### Frameworks e guidelines:
 
 Mitre Att&ck
