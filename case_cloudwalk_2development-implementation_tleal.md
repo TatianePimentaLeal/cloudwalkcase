@@ -70,11 +70,15 @@ Em seguida, os dados dessas colunas foram verificados com mais especificidade re
    
    ![cloudwalkcase/cloudwalk-case-images/Img1_ClientIP.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img1_ClientIP.jpg)
    
+   Imagem 1. Gráfico de IPs mais frequentes
+   
    
 
 2. **ClientRequestURI (Top 10 URIs mais solicitados)**:
    
    ![cloudwalkcase/cloudwalk-case-images/Img1_ClientRequestURI.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img1_ClientRequestURI.jpg)
+   
+   Imagem 2. Gráfico de URIs mais solicitados
    
    
 
@@ -82,17 +86,21 @@ Em seguida, os dados dessas colunas foram verificados com mais especificidade re
    
    ![cloudwalkcase/cloudwalk-case-images/Img3_ClientDeviceType.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img3_ClientDeviceType.jpg)
    
+   Imagem 3. Gráfico distribuição de dispositivos
+   
    
 
 4. **ClientCountry (Distribuição por país)**:
    
    ![cloudwalkcase/cloudwalk-case-images/Img4_ClientCountry.jpg at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img4_ClientCountry.jpg)
 
+        Imagem 4. Gráfico de países com maior incidência
 
 
 
 
-Esses padrões mostram que os **IPs e URIs** indicam acessos repetidos de certas fontes, e a maior parte do tráfego vem da **Índia e dos EUA**, com uma predominância de **dispositivos desktop**.
+
+Esses padrões mostram que os **IPs e URIs** indicam acessos repetidos de certas fontes, e a maior parte do tráfego vem da **Índia e dos EUA**, com uma predominância de **dispositivos desktop** - que podem indicar bots zumbis.
 
 Solicitei o código da análise ao GPT para que eu pudesse revisá-lo e rodá-lo para efetuar a comprovação da ediciência da análise. Após o ajuste do path do arquivo CSV, rodei o bloco de código e obtive o retorno dos dados:
 
@@ -331,7 +339,13 @@ Pela recomendação do Copilot, efetuei uma busca **WHOIS ** no site https://www
 
 Adicionalmente, de acordo com o framework Mitre Att&ck, em uma busca preliminar, confirmava as suspeitas de tentativas de obtenção de acesso:
 
+![cloudwalkcase/cloudwalk-case-images/Img5_mitre-attack-search.png at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img5_mitre-attack-search.png)
 
+**Imagem 5.** Buscas no Mitre Att&ck Navigator - padrões de ataque para Network
+
+![cloudwalkcase/cloudwalk-case-images/Img6_mitre-attack-search.png at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/cloudwalk-case-images/Img6_mitre-attack-search.png)
+
+**Imagem 6.** Buscas no Mitre Att&ck Navigator - Data sources (Network)
 
 
 
