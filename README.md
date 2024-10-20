@@ -13,9 +13,13 @@ Os materiais estão organizados da seguinte forma:
 
 [cloudwalkcase/case_cloudwalk_2development-implementation_tleal.md at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/blob/main/case_cloudwalk_2development-implementation_tleal.md)
 
+### 
+
 ### **CÓDIGO E AMOSTRA DE DATASET**
 
 [cloudwalkcase/cloudwalk-case-tatianeleal/pythonProject at main · TatianePimentaLeal/cloudwalkcase · GitHub](https://github.com/TatianePimentaLeal/cloudwalkcase/tree/main/cloudwalk-case-tatianeleal/pythonProject)
+
+
 
 
 
