@@ -1,10 +1,8 @@
 # Case CloudWalk
 
+## **2 Desenvolvimento e Implementação**
 
-
-## **Desenvolvimento**
-
-#### Análise do arquivo
+#### 2.1 Análise do arquivo
 
 Primeiramente, era ter um panorama mais claro da massa de dados do arquivo CSV, assim, utilizei um pequeno código em Python para iniciar a análise:
 
@@ -221,11 +219,9 @@ Name: count, dtype: int64}
 
 Dado o retorno, foi possível comprovar a funcionalidade do código e a análise dos dados preliminares.
 
-
-
 ---
 
-#### Levantamento de anomalias e atividades suspeitas
+#### 2.2 Levantamento de anomalias e atividades suspeitas
 
 Com os dados mais claros e uma pré-análise do panorama de usuários, foi iniciada a fase de levantameno de acessos suspeitos ou anômalos, com a verificação de padrões nos dados.
 
@@ -269,7 +265,6 @@ print(suspicious_ports)
 
 Através da análise, não foram encontradas portas que, usualmente, trazem sinal de alerta, mas pelos padrões dos IPs, alguns execeram em muito o threshold estabelecido no código como forma de balizar os acessos:
 
-
 ```python
 IPs suspeitos:
 ClientIP
@@ -308,13 +303,8 @@ Portas suspeitas:
 Series([], Name: count, dtype: int64)
 ```
 
-
-
 Dados os resultados dos IPs, solicitei ao GPT4 que me ajudasse a criar uma função para levantar os IPs privados (por serem mais seguros e rodarem dentro de LANs de empresas) e os públicos (que poderiam estar ligados à pessoas externas e provaveis invasores).
 A função resultante foi a seguinte:
-
-
-
 
 ```python
 import pandas as pd
@@ -377,8 +367,6 @@ print("\\nDetalhes dos 20 IPs públicos mais frequentes:")
 print(top_20_details) 
 ```
 
-
-
 E ela resultou em uma suspeita devido ao padrão de IPs mostrado anteriormente, a quantidade de acessos e os "ClientRequestPath"do usuário:
 
 ```python
@@ -401,3 +389,320 @@ Detalhes dos 20 IPs públicos mais frequentes:
 
 [2250 rows x 7 columns]
 ```
+
+Pela recomendação do Copilot, efetuei uma busca **WHOIS ** no site https://www.whois.com/ e pude corroborar que os IPs retornados na busca estaam espalhados pelo mundo e possuem tags de  "OrgAbuseEmail" o que, de acordo com a International Leal Technology Association e com indicadores de comprometimento (indicatos or compromise or IOC) , são um indício de ameaça, mais precisamente ao verificar os dados, até mesmo de brute force attack.
+
+#### 2.3 Resposta e Detecção de Incidente (Incident Detection and Response - IDR) e Implementação de Políticas de Segurança
+
+Como não estamos utilizando ferramentas pagas como o Splunk, Fortinet ou Google Chronicle, as proposições de solução para resposta e detecção de incidente serão propostas como scripts.
+
+Como verificado na análise prévia do dataset com Python, foi possível apurar que o dataset contém indícios de movimentações suspeitas:
+
+- IPs que aparecem muitas vezes em um curto período de tempo (indicativo de possíveis ataques de força bruta ou DoS);
+- Países ou ASN fora do esperado (pode sugerir atividade maliciosa originada de locais incomuns)
+- Requisições HTTP suspeitas (URLs incomuns ou com grandes volumes de dados)
+- Portas de origem fora do padrão (pode sugerir tentativas de evasão ou comportamento incomum ou indicativo de anomalia).
+
+Assim, foi concebido o script abaixo, com o auxílio do GPT4, para apurar:
+
+- o volume de requisições
+- países de origem das requisições
+- uso de portas incomum
+
+```python
+import pandas as pd
+
+# Carregar o dataset
+data = pd.read_csv('test-dataset.csv')
+
+# Parâmetros para detecção de atividades suspeitas
+requests_threshold = 100  # número limite de requisições repetidas de um mesmo IP
+suspicious_countries = ['us', 'ru', 'cn']  # países suspeitos ou inesperados
+unusual_ports = [22, 3389]  # portas que são incomuns para acesso web
+
+# Função para detectar IPs com muitas requisições
+def detect_high_volume_ips(df):
+    ip_counts = df['ClientIP'].value_counts()
+    return ip_counts[ip_counts > requests_threshold]
+
+# Função para detectar requisições de países suspeitos
+def detect_suspicious_countries(df):
+    return df[df['ClientCountry'].isin(suspicious_countries)]
+
+# Função para detectar uso de portas incomuns
+def detect_unusual_ports(df):
+    return df[df['ClientSrcPort'].isin(unusual_ports)]
+
+# Função para agregar os alertas
+def generate_alerts(df):
+    alerts = []
+
+    # Detectar IPs com alta quantidade de requisições
+    high_volume_ips = detect_high_volume_ips(df)
+    if not high_volume_ips.empty:
+        alerts.append(f"IPs com volume elevado de requisições: {list(high_volume_ips.index)}")
+
+    # Detectar países suspeitos
+    suspicious_country_requests = detect_suspicious_countries(df)
+    if not suspicious_country_requests.empty:
+        alerts.append(f"Requisições de países suspeitos: {suspicious_country_requests['ClientIP'].unique()}")
+
+    # Detectar portas de origem incomuns
+    unusual_port_requests = detect_unusual_ports(df)
+    if not unusual_port_requests.empty:
+        alerts.append(f"Requisições usando portas incomuns: {unusual_port_requests['ClientSrcPort'].unique()}")
+
+    return alerts
+
+# Gerar alertas
+alerts = generate_alerts(data)
+for alert in alerts:
+    print(alert)
+```
+
+Depois, revisando o código com o GPT4, alterei o script para monitorar os logs de rede, detectar padrões suspeito de acordo com diretivas internas aplicadas a ele e, assim, gerar alertas por email com os dados dos eventos.
+
+```python
+import pandas as pd
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+# Parâmetros para detecção de atividades suspeitas
+requests_threshold = 100  # número limite de requisições repetidas de um mesmo IP
+suspicious_countries = ['us', 'ru', 'cn']  # países suspeitos ou inesperados
+unusual_ports = [22, 3389]  # portas que são incomuns para acesso web
+
+# Função para detectar IPs com muitas requisições
+def detect_high_volume_ips(df):
+    ip_counts = df['ClientIP'].value_counts()
+    return ip_counts[ip_counts > requests_threshold]
+
+# Função para detectar requisições de países suspeitos
+def detect_suspicious_countries(df):
+    return df[df['ClientCountry'].isin(suspicious_countries)]
+
+# Função para detectar uso de portas incomuns
+def detect_unusual_ports(df):
+    return df[df['ClientSrcPort'].isin(unusual_ports)]
+
+# Função para agregar os alertas
+def generate_alerts(df):
+    alerts = []
+
+    # Detectar IPs com alta quantidade de requisições
+    high_volume_ips = detect_high_volume_ips(df)
+    if not high_volume_ips.empty:
+        alerts.append(f"IPs com volume elevado de requisições: {list(high_volume_ips.index)}")
+
+    # Detectar países suspeitos
+    suspicious_country_requests = detect_suspicious_countries(df)
+    if not suspicious_country_requests.empty:
+        alerts.append(f"Requisições de países suspeitos: {suspicious_country_requests['ClientIP'].unique()}")
+
+    # Detectar portas de origem incomuns
+    unusual_port_requests = detect_unusual_ports(df)
+    if not unusual_port_requests.empty:
+        alerts.append(f"Requisições usando portas incomuns: {unusual_port_requests['ClientSrcPort'].unique()}")
+
+    return alerts
+
+# Função para enviar o alerta por e-mail
+def send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password):
+    if not alerts:
+        print("Nenhum alerta gerado, nenhum e-mail será enviado.")
+        return
+
+    # Montar o corpo do e-mail
+    alert_message = "\\n".join(alerts)
+    subject = "Alerta de Atividade Suspeita na Rede"
+
+    # Criar o conteúdo do e-mail
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(alert_message, 'plain'))
+
+    try:
+        # Estabelecer conexão com o servidor SMTP e enviar o e-mail
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()  # Se o servidor exigir TLS
+        server.login(login, password)
+        server.sendmail(from_email, to_email, msg.as_string())
+        server.quit()
+        print(f"E-mail enviado para {to_email}")
+    except Exception as e:
+        print(f"Falha no envio do e-mail: {e}")
+
+# Parâmetros de envio de e-mail
+to_email = "idr.quarantine@exemplo.com"  # E-mail para onde os alertas serão enviados
+from_email = "sec.analyst@exemplo.com"  # Seu e-mail
+smtp_server = "smtp.gmail.com"  # Servidor SMTP do Gmail
+smtp_port = 587  # Porta SMTP
+login = "sec.analyst@exemplo.com"  # Login de e-mail (seu e-mail)
+password = "sua_senha"  # Senha do e-mail (use senhas de app no Gmail)
+
+# Carregar o dataset
+data = pd.read_csv('test-dataset.csv')
+
+# Gerar alertas
+alerts = generate_alerts(data)
+
+# Enviar os alertas por e-mail
+send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password)
+```
+
+Por fim, para bloqueio de acessos de IPs suspeitos, seria necessária a integraão com sistemas de proteção como Firewall, um Sistema de Prevenção de Intrusões (IPS, ou em inglês Intrusion Prevention System - IPS) ou ainda servidores proxy/reverse proxy.
+
+Para fins de aplicação ao case, escolhi a adição de uma funcionalidade de bloqueio de IPs diretamente com Python e o iptabes para sistemas Linux:
+
+```python
+import os
+
+# Função para bloquear IPs suspeitos usando iptables
+def block_ip(ip):
+    command = f"sudo iptables -A INPUT -s {ip} -j DROP"
+    os.system(command)
+    print(f"IP {ip} bloqueado.")
+
+# Função para bloquear IPs com muitas requisições
+def block_suspicious_ips(df):
+    high_volume_ips = detect_high_volume_ips(df)
+    for ip in high_volume_ips.index:
+        block_ip(ip)
+
+# Chamar block_suspicious_ips para bloquear IPs suspeitos
+block_suspicious_ips(data)
+```
+
+Este bloco de código, quando agregado ao script de alerta, permite a ação completa do IDR compreendendo:
+
+- a detecção de ocorrências suspeitas na rede;
+
+- o envio de alertas das suspeitas por email para análise;
+
+- o bloqueio de IPs suspeitos com atividades maliciosas via iptables do Linux.
+
+```python
+import pandas as pd
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import os
+
+# Parâmetros para detecção de atividades suspeitas
+requests_threshold = 100  # número limite de requisições repetidas de um mesmo IP
+suspicious_countries = ['us', 'ru', 'cn']  # países suspeitos ou inesperados
+unusual_ports = [22, 3389]  # portas que são incomuns para acesso web
+
+# Função para detectar IPs com muitas requisições
+def detect_high_volume_ips(df):
+    ip_counts = df['ClientIP'].value_counts()
+    return ip_counts[ip_counts > requests_threshold]
+
+# Função para detectar requisições de países suspeitos
+def detect_suspicious_countries(df):
+    return df[df['ClientCountry'].isin(suspicious_countries)]
+
+# Função para detectar uso de portas incomuns
+def detect_unusual_ports(df):
+    return df[df['ClientSrcPort'].isin(unusual_ports)]
+
+# Função para agregar os alertas
+def generate_alerts(df):
+    alerts = []
+
+    # Detectar IPs com alta quantidade de requisições
+    high_volume_ips = detect_high_volume_ips(df)
+    if not high_volume_ips.empty:
+        alerts.append(f"IPs com volume elevado de requisições: {list(high_volume_ips.index)}")
+
+    # Detectar países suspeitos
+    suspicious_country_requests = detect_suspicious_countries(df)
+    if not suspicious_country_requests.empty:
+        alerts.append(f"Requisições de países suspeitos: {suspicious_country_requests['ClientIP'].unique()}")
+
+    # Detectar portas de origem incomuns
+    unusual_port_requests = detect_unusual_ports(df)
+    if not unusual_port_requests.empty:
+        alerts.append(f"Requisições usando portas incomuns: {unusual_port_requests['ClientSrcPort'].unique()}")
+
+    return alerts
+
+# Função para enviar o alerta por e-mail
+def send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password):
+    if not alerts:
+        print("Nenhum alerta gerado, nenhum e-mail será enviado.")
+        return
+
+    # Montar o corpo do e-mail
+    alert_message = "\\n".join(alerts)
+    subject = "Alerta de Atividade Suspeita na Rede"
+
+    # Criar o conteúdo do e-mail
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(alert_message, 'plain'))
+
+    try:
+        # Estabelecer conexão com o servidor SMTP e enviar o e-mail
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()  # Se o servidor exigir TLS
+        server.login(login, password)
+        server.sendmail(from_email, to_email, msg.as_string())
+        server.quit()
+        print(f"E-mail enviado para {to_email}")
+    except Exception as e:
+        print(f"Falha no envio do e-mail: {e}")
+
+# Função para bloquear IPs suspeitos usando iptables
+def block_ip(ip):
+    command = f"sudo iptables -A INPUT -s {ip} -j DROP"
+    os.system(command)
+    print(f"IP {ip} bloqueado.")
+
+# Função para bloquear IPs com muitas requisições
+def block_suspicious_ips(df):
+    high_volume_ips = detect_high_volume_ips(df)
+    for ip in high_volume_ips.index:
+        block_ip(ip)
+
+# Parâmetros de envio de e-mail
+to_email = "idr.quarantine@exemplo.com"  # E-mail para onde os alertas serão enviados
+from_email = "sec.analyst@exemplo.com"  # Seu e-mail
+smtp_server = "smtp.gmail.com"  # Servidor SMTP do Gmail
+smtp_port = 587  # Porta SMTP
+login = "sec.analyst@exemplo.com"  # Login de e-mail (seu e-mail)
+password = "sua_senha"  # Senha do e-mail (use senhas de app no Gmail)
+
+# Carregar o dataset
+data = pd.read_csv('test-dataset.csv')
+
+# Gerar alertas
+alerts = generate_alerts(data)
+
+# Enviar os alertas por e-mail
+send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password)
+
+# Bloquear os IPs suspeitos detectados
+block_suspicious_ips(data)
+```
+
+Retorno do script de IDR acima:
+
+```python
+\\pythonProject\\dataset-full-idr-integration.py 
+
+# Bloqueio dos IPs suspeitos
+IP 208.150.99.181 bloqueado.
+IP 125.227.246.131 bloqueado.
+IP 185.24.37.122 bloqueado.
+IP 209.158.28.49 bloqueado.
+IP 222.30.33.183 bloqueado.
+IP 129.53.13.62 bloqueado.
+```
+
+3 Conclusão e Fechamento

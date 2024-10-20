@@ -59,4 +59,7 @@ private_ips_count, public_ips_count, top_20_details = count_public_private_ips_w
 print(f"Quantidade de IPs privados: {private_ips_count}")
 print(f"Quantidade de IPs públicos: {public_ips_count}")
 print("\nDetalhes dos 20 IPs públicos mais frequentes:")
-print(top_20_details)
+#print(top_20_details)
+
+
+
