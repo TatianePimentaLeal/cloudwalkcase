@@ -314,7 +314,7 @@ Detalhes dos 20 IPs públicos mais frequentes:
 [2250 rows x 7 columns]
 ```
 
-Pela recomendação do Copilot, efetuei uma busca **WHOIS ** no site https://www.whois.com/ e pude corroborar que os IPs retornados na busca estavam espalhados pelo mundo e possuem tags de  "OrgAbuseEmail" o que, de acordo com a [International Legal Technology Association](https://www.iltanet.org/blogs/david-tremont/2018/04/27/gdpr-and-whois-compliance) e com indicadores de comprometimento (indicatos or compromise or IOC) , são um indício de ameaça, mais precisamente ao verificar os dados, até mesmo de brute force attack.
+Pela recomendação do Copilot, efetuei uma busca **WHOIS ** no site https://www.whois.com/ e pude corroborar que os IPs retornados na busca estavam espalhados pelo mundo e possuem tags de  "OrgAbuseEmail" o que, de acordo com a [International Legal Technology Association](https://www.iltanet.org/blogs/david-tremont/2018/04/27/gdpr-and-whois-compliance) e com indicadores de comprometimento (indicatos of compromise or IOC) , são um indício de ameaça, mais precisamente ao verificar os dados, até mesmo de brute force attack.
 
 Adicionalmente, de acordo com o framework Mitre Att&ck, em uma busca preliminar, confirmava as suspeitas de tentativas de obtenção de acesso:
 
@@ -623,8 +623,6 @@ O grande volume de dados propiciou que fosse possível a análise de padrões de
 - Suas informações internal (colunas e dados gerais);
 
 - O que poderia haver de errado com os dados (análise).
-
- 
 
 Por isso, iniciei o estudo com o entendimento dos dados, refinando alguns padrões, repetições e comportamentos suspeitos de acordo com frameworks e guidelines como o **Mitre Att&ck **(que apresenta táticas, técnicas e procedimentos de ataque), **NIST 800-53** e **ISO 27001 **(que apresenta informações de controles de acesso) com a ajuda do GPT4 e do Python para agilizar a análise.
 
