@@ -624,7 +624,7 @@ O grande volume de dados propiciou que fosse possível a análise de padrões de
 
 - O que poderia haver de errado com os dados (análise).
 
-Por isso, iniciei o estudo com o entendimento dos dados, refinando alguns padrões, repetições e comportamentos suspeitos de acordo com frameworks e guidelines como o **Mitre Att&ck **(que apresenta táticas, técnicas e procedimentos de ataque), **NIST 800-53** e **ISO 27001**(que apresenta informações de controles de acesso) com a ajuda do GPT4 e do Python para agilizar a análise.
+Por isso, iniciei o estudo com o entendimento dos dados, refinando alguns padrões, repetições e comportamentos suspeitos de acordo com frameworks e guidelines como o **Mitre Att&ck** (que apresenta táticas, técnicas e procedimentos de ataque), **NIST 800-53** e **ISO 27001** (que apresenta informações de controles de acesso) com a ajuda do GPT4 e do Python para agilizar a análise.
 
 Com a impossibilidade de utilização de ferramentas pagas de SIEM, mas com o entendimento de que havia padrões suspeitos nos dados colhidos e analisados, concebi um script em Python que pudesse rodar em Linux e que propiciasse a aplicação de uma política balisada pelos guideline supracitados, e que premitisse o envio de alertas com os IPs suspeitos, para uma análise mais específica do time de analistas, assim como o bloqueio do IP até a verificação da idoneidade do IP.
 
