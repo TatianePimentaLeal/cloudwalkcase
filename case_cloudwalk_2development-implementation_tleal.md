@@ -16,7 +16,7 @@ print(dataset)
 
 Assim pude iniciar a visualização dos dados e ter uma ideia das colunas e conteúdo.
 
-Em seguida, montei o seguinte prompt no GPT3.5:
+Em seguida, montei o seguinte prompt no GPT4:
 
 > Crie um algoritmo em Python que:
 > 
@@ -55,7 +55,7 @@ Os dados foram organizados e valores que aparecem mais de 3 vezes foram identifi
 
 O resultado da análise foi o seguinte:
 
-- Para análise dos padões específicos, foi dado enfoque nas seguintes colunas para a extração de padrões mais consistentes
+- Para análise dos padrões específicos, foi dado enfoque nas seguintes colunas para a extração de padrões mais consistentes
 1. **ClientIP**: Para ver se algum endereço IP faz múltiplas requisições.
 2. **ClientRequestHost**: Para identificar se algum host recebe acessos frequentes.
 3. **ClientRequestURI**: Para identificar se algum URI específico é mais solicitado.
@@ -206,7 +206,7 @@ print(suspicious_ports)
 
 Neste script temos a análise das suspeitas de ataque e tentativa de invação da rede. Foram utilizadas uma variável para determinar o limite para se considerar uma porta como suspeita (quantidade de acessos), uma variável para limitar a consideração de um IP suspeito (quantidade de acessos) e o retorno de *DataFrames* de IPs e portas suspeitos.
 
-Através da análise, não foram encontradas portas que, usualmente, trazem sinal de alerta, mas pelos padrões dos IPs, alguns execeram em muito o threshold estabelecido no código como forma de balizar os acessos:
+Através da análise, não foram encontradas portas que, usualmente, trazem sinal de alerta, mas pelos padrões dos IPs, alguns excederam em muito o threshold estabelecido no código como forma de balizar os acessos:
 
 ```python
 IPs suspeitos:
@@ -246,7 +246,7 @@ Portas suspeitas:
 Series([], Name: count, dtype: int64)
 ```
 
-Dados os resultados dos IPs, solicitei ao GPT4 que me ajudasse a criar uma função para levantar os IPs privados (por serem mais seguros e rodarem dentro de LANs de empresas) e os públicos (que poderiam estar ligados à pessoas externas e provaveis invasores).
+Dados os resultados dos IPs, solicitei ao GPT4 que me ajudasse a criar uma função para levantar os IPs privados (por serem mais seguros e rodarem dentro de LANs de empresas) e os públicos (que poderiam estar ligados à pessoas externas e prováveis invasores).
 A função resultante trouxe a divisão entre IPs públicos e privados, verificando os 20 IPs públicos mais frequentes, visto que neles se concentram a maioria dos ataques :
 
 ```python
@@ -314,7 +314,7 @@ Detalhes dos 20 IPs públicos mais frequentes:
 [2250 rows x 7 columns]
 ```
 
-Pela recomendação do Copilot, efetuei uma busca **WHOIS ** no site https://www.whois.com/ e pude corroborar que os IPs retornados na busca estavam espalhados pelo mundo e possuem tags de  "OrgAbuseEmail" o que, de acordo com a [International Legal Technology Association](https://www.iltanet.org/blogs/david-tremont/2018/04/27/gdpr-and-whois-compliance) e com indicadores de comprometimento (indicatos of compromise or IOC) , são um indício de ameaça, mais precisamente ao verificar os dados, até mesmo de brute force attack.
+Pela recomendação do Copilot, efetuei uma busca **WHOIS** no site https://www.whois.com/ e pude corroborar que os IPs retornados na busca estavam espalhados pelo mundo e possuem tags de  "OrgAbuseEmail" o que, de acordo com a [International Legal Technology Association](https://www.iltanet.org/blogs/david-tremont/2018/04/27/gdpr-and-whois-compliance) e com indicadores de comprometimento (indicatos of compromise or IOC) , são um indício de ameaça, mais precisamente ao verificar os dados, até mesmo de brute force attack.
 
 Adicionalmente, de acordo com o framework Mitre Att&ck, em uma busca preliminar, confirmava as suspeitas de tentativas de obtenção de acesso:
 
@@ -481,7 +481,7 @@ send_email(alerts, to_email, from_email, smtp_server, smtp_port, login, password
 
 Por fim, para bloqueio de acessos de IPs suspeitos, seria necessária a integração com sistemas de proteção como Firewall, um Sistema de Prevenção de Intrusões (IPS, ou em inglês Intrusion Prevention System - IPS) ou ainda servidores proxy/reverse proxy.
 
-Para fins de aplicação ao case, escolhi a adição de uma funcionalidade de bloqueio de IPs diretamente com Python e o **iptables ** para sistemas Linux:
+Para fins de aplicação ao case, escolhi a adição de uma funcionalidade de bloqueio de IPs diretamente com Python e o **iptables** para sistemas Linux:
 
 ```python
 import os
@@ -624,7 +624,7 @@ O grande volume de dados propiciou que fosse possível a análise de padrões de
 
 - O que poderia haver de errado com os dados (análise).
 
-Por isso, iniciei o estudo com o entendimento dos dados, refinando alguns padrões, repetições e comportamentos suspeitos de acordo com frameworks e guidelines como o **Mitre Att&ck **(que apresenta táticas, técnicas e procedimentos de ataque), **NIST 800-53** e **ISO 27001 **(que apresenta informações de controles de acesso) com a ajuda do GPT4 e do Python para agilizar a análise.
+Por isso, iniciei o estudo com o entendimento dos dados, refinando alguns padrões, repetições e comportamentos suspeitos de acordo com frameworks e guidelines como o **Mitre Att&ck **(que apresenta táticas, técnicas e procedimentos de ataque), **NIST 800-53** e **ISO 27001**(que apresenta informações de controles de acesso) com a ajuda do GPT4 e do Python para agilizar a análise.
 
 Com a impossibilidade de utilização de ferramentas pagas de SIEM, mas com o entendimento de que havia padrões suspeitos nos dados colhidos e analisados, concebi um script em Python que pudesse rodar em Linux e que propiciasse a aplicação de uma política balisada pelos guideline supracitados, e que premitisse o envio de alertas com os IPs suspeitos, para uma análise mais específica do time de analistas, assim como o bloqueio do IP até a verificação da idoneidade do IP.
 
